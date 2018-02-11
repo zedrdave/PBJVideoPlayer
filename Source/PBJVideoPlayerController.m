@@ -223,25 +223,25 @@ static NSString * const PBJVideoPlayerControllerReadyForDisplay = @"readyForDisp
                 NSError *error = nil;
                 AVKeyValueStatus keyStatus = [asset statusOfValueForKey:key error:&error];
                 if (keyStatus == AVKeyValueStatusFailed) {
-                    _playbackState = PBJVideoPlayerPlaybackStateFailed;
-                    if ([_delegate respondsToSelector:@selector(videoPlayerPlaybackStateDidChange:)]){
-                        [_delegate videoPlayerPlaybackStateDidChange:self];
+                    self->_playbackState = PBJVideoPlayerPlaybackStateFailed;
+                    if ([self->_delegate respondsToSelector:@selector(videoPlayerPlaybackStateDidChange:)]){
+                        [self->_delegate videoPlayerPlaybackStateDidChange:self];
                     }
                     return;
                 }
             }
 
             // check playable
-            if (!_asset.playable) {
-                _playbackState = PBJVideoPlayerPlaybackStateFailed;
-                if ([_delegate respondsToSelector:@selector(videoPlayerPlaybackStateDidChange:)]){
-                    [_delegate videoPlayerPlaybackStateDidChange:self];
+            if (!self->_asset.playable) {
+                self->_playbackState = PBJVideoPlayerPlaybackStateFailed;
+                if ([self->_delegate respondsToSelector:@selector(videoPlayerPlaybackStateDidChange:)]){
+                    [self->_delegate videoPlayerPlaybackStateDidChange:self];
                 }
                 return;
             }
 
             // setup player
-            AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:_asset];
+            AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:self->_asset];
             [self _setPlayerItem:playerItem];
             
         }];
@@ -420,7 +420,7 @@ static NSString * const PBJVideoPlayerControllerReadyForDisplay = @"readyForDisp
 
 #pragma mark - main queue helper
 
-typedef void (^PBJVideoPlayerBlock)();
+typedef void (^PBJVideoPlayerBlock)(void);
 
 - (void)_enqueueBlockOnMainQueue:(PBJVideoPlayerBlock)block {
     dispatch_async(dispatch_get_main_queue(), ^{
